@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="3D Truck Simulator Game - Drive your truck and collect cargo!" />
+    <meta name="theme-color" content="#87ceeb" />
+    <title>🚚 Truck Simulator 3D</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Main Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD Overlay -->
+    <div id="hud">
+      <div class="panel top-left">
+        <h1>🚚 Truck Simulator 3D</h1>
+        <div class="stats">
+          <p><strong>Score:</strong> <span id="score">0</span></p>
+          <p><strong>Speed:</strong> <span id="speed">0</span> km/h</p>
+          <p><strong>FPS:</strong> <span id="fps">60</span></p>
+        </div>
+      </div>
+
+      <div class="panel top-right">
+        <h3>Controls</h3>
+        <ul>
+          <li><strong>W / ↑</strong> - Accelerate</li>
+          <li><strong>S / ↓</strong> - Reverse</li>
+          <li><strong>A / ←</strong> - Turn Left</li>
+          <li><strong>D / →</strong> - Turn Right</li>
+        </ul>
+      </div>
+
+      <div class="panel bottom-left">
+        <h3>Debug Mode</h3>
+        <ul class="debug-keys">
+          <li><strong>~</strong> - Toggle Debug</li>
+          <li><strong>1</strong> - Collision Boxes</li>
+          <li><strong>2</strong> - Velocity Vector</li>
+          <li><strong>3</strong> - Physics Info</li>
+          <li><strong>4</strong> - Grid</li>
+          <li><strong>5</strong> - Console Logs</li>
+        </ul>
+      </div>
+
+      <div class="panel bottom-right">
+        <div id="debug-info">Debug: OFF</div>
+      </div>
+    </div>
+
+    <!-- Performance Stats -->
+    <div id="stats-panel" class="hidden">
+      <div class="stat-row">
+        <span id="stat-fps">FPS: 0</span>
+      </div>
+      <div class="stat-row">
+        <span id="stat-position">Pos: (0, 0)</span>
+      </div>
+      <div class="stat-row">
+        <span id="stat-speed">Speed: 0</span>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading Truck Simulator...</p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error-message" class="hidden">
+      <div class="error-content">
+        <h2>⚠️ Error Loading Game</h2>
+        <p id="error-text"></p>
+        <button onclick="location.reload()">Reload Page</button>
+      </div>
+    </div>
+
+    <script type="module">
+      // Feature detection
+      function checkBrowserSupport() {
+        const canvas = document.createElement("canvas");
+        const webgl = canvas.getContext("webgl2") || canvas.getContext("webgl");
+        if (!webgl) {
+          throw new Error("WebGL is not supported. Please use a modern Chrome browser.");
+        }
+      }
+
+      try {
+        checkBrowserSupport();
+      } catch (e) {
+        document.getElementById("error-text").textContent = e.message;
+        document.getElementById("error-message").classList.remove("hidden");
+        document.getElementById("loading-screen").style.display = "none";
+        throw e;
+      }
+
+      // Load the main game
+      import("./main.js").catch((e) => {
+        console.error("Failed to load game:", e);
+        document.getElementById("error-text").textContent = 
+          "Failed to load game module: " + (e.message || "Unknown error");
+        document.getElementById("error-message").classList.remove("hidden");
+        document.getElementById("loading-screen").style.display = "none";
+      });
+    </script>
+  </body>
+</html>
